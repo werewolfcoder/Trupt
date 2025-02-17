@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema({
         required:true,
         select:false
       },
+      userType:
+      {
+        type:String,
+        enum: ['donor', 'volunteer']
+      },
       socketId:{
         type:String
       }   

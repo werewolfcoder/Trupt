@@ -14,6 +14,7 @@ The request body should be a JSON object with the following fields:
   - `lastname`: A string with a minimum length of 3 characters (optional).
 - `email`: A valid email address (required).
 - `password`: A string with a minimum length of 6 characters (required).
+- `usertype`: A choice box or radio button(string) with values 'donor' or 'volunteer' (required)
 
 Example:
 ```json
@@ -23,7 +24,8 @@ Example:
     "lastname": "Doe"
   },
   "email": "john.doe@example.com",
-  "password": "password123"
+  "password": "password123",
+  "userType": "donor"
 }
 ```
 ### Example Response:
@@ -32,5 +34,6 @@ Example:
         - `firstname` (String): User's firstname (minimun 3 characters),
         - `lastname` (String): User's lastname (minimum 3 characters),
     - `email`(String): User's email address (must be a valid email),
-    - `password` (String): User's password (minimum 6 cahracters)
+    - `password` (String): User's password (minimum 6 cahracters),
+    - `userType` (String): User type (donor or volunteer) 
 - `token` (String): jwt Token
