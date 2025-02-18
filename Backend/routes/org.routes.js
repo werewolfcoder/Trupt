@@ -16,7 +16,7 @@ router.post('/registerOrg',
     orgController.registerOrg
 );
 
-router.post('/login',
+router.post('/loginOrg',
     [
         body('email').isEmail().withMessage('Invalid Email'),
         body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')

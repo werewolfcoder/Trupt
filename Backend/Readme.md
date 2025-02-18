@@ -39,6 +39,37 @@ Example:
     - `userType` (String): User type (donor or volunteer)
 - `token` (String): JWT Token
 
+# User Login Endpoint
+
+## Endpoint: `/users/login`
+
+### Method: POST
+
+### Description:
+This endpoint is used to log in a user. It validates the input data, checks the user's credentials, and returns a JSON response containing the user object and a JWT token.
+
+### Request Body:
+The request body should be a JSON object with the following fields:
+- `email`: A valid email address (required).
+- `password`: A string with a minimum length of 6 characters (required).
+
+Example:
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+```
+
+### Example Response:
+- `user` (object):
+    - `fullname` (object):
+        - `firstname` (String): User's firstname (minimum 3 characters),
+        - `lastname` (String): User's lastname (minimum 3 characters),
+    - `email` (String): User's email address (must be a valid email),
+    - `userType` (String): User type (donor or volunteer)
+- `token` (String): JWT Token
+
 # Organization Registration Endpoint
 
 ## Endpoint: `/orgs/registerOrg`
@@ -66,6 +97,39 @@ Example:
   "address": "123 Charity Lane",
   "contactPerson": "Jane Doe",
   "contactNumber": "1234567890",
+  "email": "contact@helpinghands.org",
+  "password": "securepassword"
+}
+```
+
+### Example Response:
+- `organization` (object):
+    - `organizationName` (String): Organization's name (minimum 3 characters),
+    - `organizationType` (String): Organization type (hotel, NGO, non-profit, social service),
+    - `address` (String): Organization's address (minimum 3 characters),
+    - `contactPerson` (String): Contact person's name (minimum 3 characters),
+    - `contactNumber` (String): Contact number (minimum 10 characters),
+    - `email` (String): Organization's email address (must be a valid email),
+    - `password` (String): Organization's password (minimum 6 characters)
+- `token` (String): JWT Token
+
+# Organization Login Endpoint
+
+## Endpoint: `/orgs/loginOrg`
+
+### Method: POST
+
+### Description:
+This endpoint is used to log in an organization. It validates the input data, checks the organization's credentials, and returns a JSON response containing the organization object and a JWT token.
+
+### Request Body:
+The request body should be a JSON object with the following fields:
+- `email`: A valid email address (required).
+- `password`: A string with a minimum length of 6 characters (required).
+
+Example:
+```json
+{
   "email": "contact@helpinghands.org",
   "password": "securepassword"
 }
