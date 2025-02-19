@@ -70,6 +70,35 @@ Example:
     - `userType` (String): User type (donor or volunteer)
 - `token` (String): JWT Token
 
+# User Profile Endpoint
+
+## Endpoint: `/users/profile`
+
+### Method: GET
+
+### Description:
+This endpoint is used to get the profile of the logged-in user. It requires authentication.
+
+### Example Response:
+- `user` (object):
+    - `fullname` (object):
+        - `firstname` (String): User's firstname (minimum 3 characters),
+        - `lastname` (String): User's lastname (minimum 3 characters),
+    - `email` (String): User's email address (must be a valid email),
+    - `userType` (String): User type (donor or volunteer)
+
+# User Logout Endpoint
+
+## Endpoint: `/users/logout`
+
+### Method: GET
+
+### Description:
+This endpoint is used to log out the user. It requires authentication.
+
+### Example Response:
+- `message` (String): "Logged out"
+
 # Organization Registration Endpoint
 
 ## Endpoint: `/orgs/registerOrg`
@@ -145,3 +174,33 @@ Example:
     - `email` (String): Organization's email address (must be a valid email),
     - `password` (String): Organization's password (minimum 6 characters)
 - `token` (String): JWT Token
+
+# Organization Profile Endpoint
+
+## Endpoint: `/orgs/profile`
+
+### Method: GET
+
+### Description:
+This endpoint is used to get the profile of the logged-in organization. It requires authentication.
+
+### Example Response:
+- `organization` (object):
+    - `organizationName` (String): Organization's name (minimum 3 characters),
+    - `organizationType` (String): Organization type (hotel, NGO, non-profit, social service),
+    - `address` (String): Organization's address (minimum 3 characters),
+    - `contactPerson` (String): Contact person's name (minimum 3 characters),
+    - `contactNumber` (String): Contact number (minimum 10 characters),
+    - `email` (String): Organization's email address (must be a valid email)
+
+# Organization Logout Endpoint
+
+## Endpoint: `/orgs/logout`
+
+### Method: GET
+
+### Description:
+This endpoint is used to log out the organization. It requires authentication.
+
+### Example Response:
+- `message` (String): "Logged out"

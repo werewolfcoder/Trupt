@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 const orgController = require('../controllers/org.controllers');
-
+const authMiddleware = require('../middlewares/auth.middleware');
 router.post('/registerOrg',
     [
         body('organizationName').isLength({ min: 3 }).withMessage('Organization Name must be at least 3 characters long'),
@@ -24,4 +24,7 @@ router.post('/loginOrg',
     orgController.loginOrg
 );
 
+router.get('/profile', authMiddleware.authOrg, orgController.getOrgProfile)
+
+router.get('/logout', authMiddleware.authOrg, orgController.logoutOrg)
 module.exports = router;

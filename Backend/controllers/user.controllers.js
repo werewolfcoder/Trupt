@@ -2,6 +2,7 @@ const userModel = require('../models/user.model');
 const userService = require('../services/user.service');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const blackListTokenModel = require('../models/blackListToken.model');
 
 module.exports.registerUser = async (req, res, next) => {
     const errors = validationResult(req);
@@ -10,6 +11,11 @@ module.exports.registerUser = async (req, res, next) => {
     }
 
     const { fullname, email, password, userType } = req.body;
+
+    const userExists = await userModel.findOne({ email });   
+    if (userExists) {
+        return res.status(400).json({ message: 'User already exists' });
+    }
     const hashedPassword = await userModel.hashPassword(password);
 
     const user = await userService.createUser({
@@ -45,7 +51,24 @@ module.exports.loginUser = async (req, res, next) => {
         return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
+    const token = user.generateAuthToken();
+    res.cookie('token', token, { httpOnly: true });
     res.status(200).json({ user, token });
 };
+
+
+module.exports.getUserProfile = async (req, res, next) => {
+
+    res.status(200).json(req.user);
+
+};
+
+module.exports.logoutUser = async (req, res, next) => {
+    res.clearCookie('token');
+    const token = req.cookies.token || req.headers.authorization.split(' ')[ 1 ];
+
+    await blackListTokenModel.create({ token });
+
+    res.status(200).json({ message: 'Logged out' });
+
+}
