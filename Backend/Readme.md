@@ -174,7 +174,7 @@ Example:
     - `email` (String): Organization's email address (must be a valid email),
     - `password` (String): Organization's password (minimum 6 characters)
 - `token` (String): JWT Token
-
+ 
 # Organization Profile Endpoint
 
 ## Endpoint: `/orgs/profile`
