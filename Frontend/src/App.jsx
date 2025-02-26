@@ -5,22 +5,32 @@ import UserSignup from "./pages/UserSignUp";
 import OrgLogin from "./pages/OrgLogin";
 import OrgSignup from "./pages/OrgSignUp";
 import Home from "./pages/Home";
-import Userlogout from "./pages/UserLogout";
-import Orglogout from "./pages/OrgLogout";
-import UserProtectedWrapper from "./pages/UserProtectedWrapper";
+import CommunityPage from "./pages/CommunityPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import ProfilePage from "./pages/ProfilePage";
+import AddItemPage from "./pages/AddItemPage";
+
+import OrgContext from './context/OrgContext';
+import UserContext from './context/UserContext';
+
 const App = () => {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<UserProtectedWrapper><Home /></UserProtectedWrapper>} />
-        <Route path="/login" element={<UserLogin />} />
-        <Route path="/signup" element={<UserSignup />} />
-        <Route path="/org-login" element={<OrgLogin />} />
-        <Route path="/logout" element={<Userlogout/>} />
-        <Route path="/org-logout" element={<Orglogout/>} />
-        <Route path="/org-signup" element={<OrgSignup />} />
+    <OrgContext>
+      <UserContext>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<UserLogin />} />
+          <Route path="/signup" element={<UserSignup />} />
+          <Route path="/org-login" element={<OrgLogin />} />
+          <Route path="/org-signup" element={<OrgSignup />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/add" element={<AddItemPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
-    </div>
+      </UserContext>
+    </OrgContext>
   );
 };
 
