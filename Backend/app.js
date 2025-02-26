@@ -7,6 +7,11 @@ const connectToDb = require('./db/db')
 const userRoutes = require('./routes/user.routes')
 const orgRoutes = require('./routes/org.routes')
 const cookieParser = require('cookie-parser')
+const mapRoutes = require('./routes/maps.routes')
+const donationRoutes = require('./routes/donation.routes')
+
+
+
 app.use(cookieParser())
 
 app.use(cors())
@@ -20,4 +25,6 @@ app.get('/',(req,res)=>{
 
 app.use('/users', userRoutes)
 app.use('/orgs', orgRoutes)
+app.use('/maps', mapRoutes)
+app.use('/donations', donationRoutes)
 module.exports = app;

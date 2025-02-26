@@ -11,7 +11,7 @@ const OrgContext = ({ children }) => {
         setOrg(newOrg);
     };
 
-    const value = {
+    const value={
         org,
         setOrg,
         isLoading,
@@ -19,8 +19,7 @@ const OrgContext = ({ children }) => {
         error,
         setError,
         updateOrg
-    };
-
+    }
     return (
         <OrgDataContext.Provider value={value}>
             {children}

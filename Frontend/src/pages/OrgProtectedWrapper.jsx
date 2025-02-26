@@ -1,9 +1,9 @@
 import React,{ useContext,useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import { UserDataContext } from "../context/UserContext";
+import { OrgDataContext } from "../context/OrgContext";
 import axios from 'axios';
-const UserProtectedWrapper = ({children}) => {
-    const [user,setUser]=useContext(UserDataContext);
+const OrgProtectedWrapper = ({children}) => {
+    const [org,setOrg]=useContext(OrgDataContext);
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
     const [isLoading, setIsLoading] = useState(true);
@@ -12,12 +12,12 @@ const UserProtectedWrapper = ({children}) => {
       navigate('/login');
     } 
   }, [token]);
-  axios.get(`${import.meta.env.VITE_BASE_URL}/users/profile`, {
+  axios.get(`${import.meta.env.VITE_BASE_URL}/orgs/profile`, {
     headers: {
         Authorization: `Bearer ${token}`}
     }).then((response)=>{
         if(response.status === 200){
-             setUser(response.data.user)
+             setOrg(response.data.org)
             setIsLoading(false)
         }}).catch((err)=>{
             console.log(err)
@@ -35,4 +35,4 @@ const UserProtectedWrapper = ({children}) => {
     );
     };
 
-export default UserProtectedWrapper;
+export default OrgProtectedWrapper;

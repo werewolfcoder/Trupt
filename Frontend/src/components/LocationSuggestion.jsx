@@ -1,14 +1,15 @@
 import React from "react";
 
 const LocationSuggestion =()=>{
+    const dummyLocation = ["Location 1", "Location 2", "Location 3", "Location 4", "Location 5"];
 
     return(
         <div>
-            <div>sample data </div>
-            <div>Location 1</div>
-            <div>Location 1</div>
-            <div>Location 1</div>
-
+            <ul>
+                {dummyLocation.map((location, index) => (
+                    <li key={index}>{location}</li>
+                ))}
+            </ul>
         </div>
     )
 }

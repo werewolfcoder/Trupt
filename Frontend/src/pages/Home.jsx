@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LocationSuggestion from '../components/LocationSuggestion';
+import axios from 'axios';
+
 const Home = () => {
     const [showForm, setShowForm] = useState(false);
     const [foodName, setFoodName] = useState('');
-    const [foodPhoto, setFoodPhoto] = useState(null);
+    // const [foodPhoto, setFoodPhoto] = useState(null);
     const [freshness, setFreshness] = useState(1);
     const [emergency, setEmergency] = useState('');
     const [location, setLocation] = useState(''); // Add state for location
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        console.log({ foodName, foodPhoto, freshness, emergency, location });
-        setShowForm(false);
-    };
+        
+    }
+
 
     return (
         <div>
@@ -29,15 +30,16 @@ const Home = () => {
                             onChange={(e) => setFoodName(e.target.value)}
                             required
                         />
+                        
                     </div>
-                    <div>
+                    {/* <div>
                         <label>Food Photo:</label>
                         <input
                             type="file"
                             onChange={(e) => setFoodPhoto(e.target.files[0])}
                             required
                         />
-                    </div>
+                    </div> */}
                     <div>
                         <label>Freshness (1 to 5):</label>
                         <input
