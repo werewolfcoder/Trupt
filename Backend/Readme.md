@@ -204,3 +204,102 @@ This endpoint is used to log out the organization. It requires authentication.
 
 ### Example Response:
 - `message` (String): "Logged out"
+
+# Donation Creation Endpoint
+
+## Endpoint: `/donations/create`
+
+### Method: POST
+
+### Description:
+This endpoint is used to create a new food donation. It requires authentication and supports multipart form data for image upload.
+
+### Headers:
+- `Authorization`: Bearer token (required)
+- `Content-Type`: multipart/form-data
+
+### Request Body:
+The request body should be form data with the following fields:
+- `foodName`: Name of the food (required, string)
+- `freshness`: Freshness rating from 1-5 (required, number)
+- `emergency`: Time window for food consumption (required, string)
+- `location`: Location text description (required, string, min length 3)
+- `locationELoc`: MapmyIndia eLoc code (required, string, min length 6)
+- `image`: Food image file (optional, image file)
+
+Example (Form Data):
+```
+foodName: "Fresh Vegetables"
+freshness: 5
+emergency: "4-6 hours"
+location: "123 Main Street, City"
+locationELoc: "ABC123"
+image: [binary file data]
+```
+
+### Response:
+```json
+{
+  "success": true,
+  "donation": {
+    "foodName": "Fresh Vegetables",
+    "freshness": 5,
+    "emergency": "4-6 hours",
+    "location": "123 Main Street, City",
+    "locationELoc": "ABC123",
+    "imageUrl": "/uploads/1234567890-image.jpg",
+    "createdAt": "2024-01-20T12:00:00.000Z"
+  }
+}
+```
+
+# Maps API Endpoints
+
+## Endpoint: `/maps/get-suggestions`
+
+### Method: GET
+
+### Description:
+This endpoint provides location suggestions based on user input using MapmyIndia API.
+
+### Headers:
+- `Authorization`: Bearer token (required)
+
+### Query Parameters:
+- `input`: Search text for location (required, string)
+
+### Example Response:
+```json
+{
+  "suggestions": [
+    {
+      "displayText": "Location Name",
+      "eLoc": "ABC123",
+      "address": "Full address"
+    }
+    // ... more suggestions
+  ]
+}
+```
+
+## Endpoint: `/maps/get-distance`
+
+### Method: GET
+
+### Description:
+This endpoint calculates distance and estimated time between two locations.
+
+### Headers:
+- `Authorization`: Bearer token (required)
+
+### Query Parameters:
+- `origin`: Starting location eLoc code (required, string)
+- `destination`: Ending location eLoc code (required, string)
+
+### Example Response:
+```json
+{
+  "distance": "5.2 km",
+  "duration": "15 mins"
+}
+```
