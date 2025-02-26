@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { MessageCircle, Heart, Users } from "lucide-react";
-
+import BottomNavigation from "../components/BottomNavigation"
 const mockPosts = [
     {
         id: 1,
@@ -74,6 +74,7 @@ const CommunityPage = () => {
                     </div>
                 ))}
             </div>
+            <BottomNavigation></BottomNavigation>
         </div>
     );
 };

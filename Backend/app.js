@@ -10,8 +10,6 @@ const cookieParser = require('cookie-parser')
 const mapRoutes = require('./routes/maps.routes')
 const donationRoutes = require('./routes/donation.routes')
 
-
-
 app.use(cookieParser())
 
 app.use(cors())
@@ -27,4 +25,5 @@ app.use('/users', userRoutes)
 app.use('/orgs', orgRoutes)
 app.use('/maps', mapRoutes)
 app.use('/donations', donationRoutes)
+app.use('/uploads', express.static('uploads'))
 module.exports = app;

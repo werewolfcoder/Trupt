@@ -1,5 +1,5 @@
 import { Bell, CheckCircle, AlertTriangle } from "lucide-react";
-
+import BottomNavigation from "../components/BottomNavigation"
 const notifications = [
     {
         id: 1,
@@ -54,6 +54,7 @@ const NotificationsPage = () => {
                     </li>
                 ))}
             </ul>
+            <BottomNavigation></BottomNavigation>
         </div>
     );
 };

@@ -10,10 +10,10 @@ module.exports.createDonation = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { userId,foodName,freshness,emergency,location } = req.body;
-
+    const { userId,foodName,freshness,emergency,location,locationELoc } = req.body;
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
     try {
-        const donation = await donationService.createDonation({ user: req.user._id,foodName,freshness,emergency,location });
+        const donation = await donationService.createDonation({ user: req.user._id,foodName,imageUrl,freshness,emergency,location,locationELoc});
         res.status(201).json(donation);
 
     } catch (err) {

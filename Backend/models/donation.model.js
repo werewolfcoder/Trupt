@@ -14,10 +14,10 @@ const donationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // foodPhoto: {
-    //     type: String,
-    //     required: true
-    // },
+    imageUrl: {
+        type: String,
+        required: true
+    },
     freshness: {
         type: Number,
         required: true
@@ -29,6 +29,10 @@ const donationSchema = new mongoose.Schema({
     location: {
         type: String,
         required: true
+    },
+    locationELoc:{
+        type:String,
+        required:true
     },
     status: {
         type: String,

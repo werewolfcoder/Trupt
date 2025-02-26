@@ -1,32 +1,34 @@
 import { useState } from "react";
+import axios from "axios";
 
-const mockLocations = [
-    "Central Park, New York",
-    "Times Square, New York",
-    "Golden Gate Bridge, San Francisco",
-    "Eiffel Tower, Paris",
-    "Colosseum, Rome",
-    "Sydney Opera House, Sydney",
-    "Tower Bridge, London",
-    "Burj Khalifa, Dubai",
-    "Tokyo Tower, Tokyo",
-    "Marina Bay Sands, Singapore",
-];
-
-const LocationSuggestion = ({ value, onSelect }) => {
+const LocationSuggestion = ({ value, eLoc, onSelect }) => {
     const [suggestions, setSuggestions] = useState([]);
 
-    const handleChange = (e) => {
+    const handleChange = async (e) => {
         const inputValue = e.target.value;
-        const filtered = mockLocations.filter((location) =>
-            location.toLowerCase().includes(inputValue.toLowerCase())
-        );
-        setSuggestions(inputValue ? filtered : []);
-        onSelect(inputValue);
+        onSelect({ displayText: inputValue, eLoc: null });
+
+        if (inputValue.length < 2) {
+            setSuggestions([]);
+            return;
+        }
+
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`, {
+                params: { input: inputValue },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            setSuggestions(response.data.suggestedLocations);
+        } catch (error) {
+            console.error("Error fetching location suggestions:", error);
+            setSuggestions([]);
+        }
     };
 
     return (
-        <div className="relative w-full">
+        <div className="relative w-screen">
             <input
                 type="text"
                 value={value}
@@ -40,12 +42,15 @@ const LocationSuggestion = ({ value, onSelect }) => {
                         <li
                             key={index}
                             onClick={() => {
-                                onSelect(location);
+                                onSelect({
+                                    displayText: `${location.placeName}, ${location.placeAddress}`,
+                                    eLoc: location.eLoc
+                                });
                                 setSuggestions([]);
                             }}
-                            className="p-2 hover:bg-emerald-100 cursor-pointer rounded-xl"
+                            className="p-2 hover:bg-emerald-100 cursor-pointer border-2"
                         >
-                            {location}
+                            {location.placeName} {location.placeAddress}
                         </li>
                     ))}
                 </ul>

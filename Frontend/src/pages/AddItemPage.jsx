@@ -3,26 +3,77 @@ import { UploadCloud, MapPin, Clock, Star, ImagePlus } from "lucide-react";
 import LocationSuggestion from "../components/LocationSuggestion";
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import BottomNavigation from "../components/BottomNavigation";
+import axios from 'axios';
+import VolunteerSearchPanel from "../components/VolunteerSearchPanel";
+
 const AddItemPage = () => {
     const [foodName, setFoodName] = useState("");
-    const [foodPhoto, setFoodPhoto] = useState(null);
     const [freshness, setFreshness] = useState("");
     const [emergency, setEmergency] = useState("");
-    const [location, setLocation] = useState("");
+    const [locationText, setLocationText] = useState("");
+    const [locationELoc, setLocationELoc] = useState("");
     const [panelOpen, setPanel] = useState(false);
-
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
     const panelRef = useRef(null);
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log({ foodName, foodPhoto, freshness, emergency, location });
-        alert("Food donation submitted successfully!");
-        setFoodName("");
-        setFoodPhoto(null);
-        setFreshness("");
-        setEmergency("");
-        setLocation("");
+    const [isPanelOpen, setIsPanelOpen] = useState(false);
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsPanelOpen(true);
+        console.log(foodName,freshness,emergency,locationELoc,locationText,image)
+        try {
+            await createDonation();
+            setIsPanelOpen(true);  // Open volunteer search panel after successful donation
+        } catch (error) {
+            console.error("Error creating donation:", error);
+        }
+    };
+
+    const handleLocationSelect = (data) => {
+        setLocationText(data.displayText);
+        setLocationELoc(data.eLoc);
+    };
+
+    async function createDonation() {
+        const formData = new FormData();
+        formData.append('foodName', foodName);
+        formData.append('freshness', freshness);
+        formData.append('emergency', emergency);
+        formData.append('location', locationText);
+        formData.append('locationELoc', locationELoc);
+        if (image) {
+            formData.append('image', image);
+        }
+
+        const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/donations/create`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'multipart/form-data',
+                }
+            }
+        );
+
+        if (response.data.success) {
+            alert("Donation created successfully!");
+        }
+    }
+   
     return (
         <div className="p-5">
             <h2 className="text-2xl font-semibold text-emerald-600 mb-4">Donate Food</h2>
@@ -42,22 +93,29 @@ const AddItemPage = () => {
                         />
                     </div>
                 </div>
-
-                {/* Food Photo */}
-                {/* <div>
+                <div>
                     <label className="block text-gray-700 font-medium mb-2">Food Photo:</label>
-                    <div className="flex items-center space-x-2">
-                        <UploadCloud className="w-5 h-5 text-emerald-500" />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setFoodPhoto(e.target.files[0])}
-                            required
-                            className="w-full border rounded-lg px-4 py-2"
-                        />
+                    <div className="flex flex-col space-y-2">
+                        <div className="flex items-center space-x-2">
+                            <UploadCloud className="w-5 h-5 text-emerald-500" />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="w-full border rounded-lg px-4 py-2"
+                            />
+                        </div>
+                        {imagePreview && (
+                            <div className="mt-2">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="w-32 h-32 object-cover rounded-lg"
+                                />
+                            </div>
+                        )}
                     </div>
-                </div> */}
-
+                </div>
                 {/* Freshness Rating */}
                 <div>
                     <label className="block text-gray-700 font-medium mb-2">Freshness (1 to 5):</label>
@@ -77,9 +135,7 @@ const AddItemPage = () => {
 
                 {/* Emergency Time */}
                 <div>
-                    <label className="block text-gray-700 font-medium mb-2">
-                        Emergency (time under which this food can be eaten):
-                    </label>
+                    <label className="block text-gray-700 font-medium mb-2">Emergency (time under which this food can be eaten):</label>
                     <div className="flex items-center space-x-2">
                         <Clock className="w-5 h-5 text-blue-500" />
                         <select
@@ -100,18 +156,38 @@ const AddItemPage = () => {
                     <div className="flex items-center space-x-2">
                         <MapPin className="w-5 h-5 text-red-500" />
                         <label className="font-medium">Location (Address):</label>
-                        <LocationSuggestion value={location} onSelect={setLocation} />
+                        <LocationSuggestion
+                            value={locationText}
+                            eLoc={locationELoc}
+                            onSelect={handleLocationSelect}
+                        />
                     </div>
                 </div>
 
-                {/* Submit Button */}
-                <button
-                    type="submit"
-                    className="w-full bg-emerald-500 text-white font-semibold py-3 rounded-lg hover:bg-emerald-600 transition-all duration-200 shadow-md"
-                >
-                    Submit
-                </button>
+                {/* Submit Button - Updated text */}
+                <div className="p-4">
+                    <button
+                        type="submit"
+                        className="w-full bg-emerald-500 text-white font-semibold py-3 rounded-lg hover:bg-emerald-600 transition-all duration-200 shadow-md"
+                    >
+                        Create Donation
+                    </button>
+                </div>
             </form>
+
+            {/* Volunteer Search Panel */}
+            {isPanelOpen && (
+                <VolunteerSearchPanel
+                    isOpen={isPanelOpen}
+                    onClose={() => setIsPanelOpen(false)}
+                    foodName={foodName}
+                    freshness={freshness}
+                    emergency={emergency}
+                    location={locationText}  // Changed from location to locationText
+                    imagePreview={imagePreview}  // Add this line
+                />
+            )}
+            <BottomNavigation />
         </div>
     );
 };
