@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LocationSuggestion from '../components/LocationSuggestion';
+import BottomNavigation from '../components/BottomNavigation';
+import Header from '../components/Header'
+import FoodList from '../components/FoodList';
 const Home = () => {
     const [showForm, setShowForm] = useState(false);
     const [foodName, setFoodName] = useState('');
@@ -17,9 +20,23 @@ const Home = () => {
     };
 
     return (
-        <div>
-            <button onClick={() => setShowForm(true)}>Donate Food</button>
-            {showForm && (
+        <div className="min-h-screen pb-20"> {/* Padding to prevent content overlap on mobile */}
+            <Header />
+            <main className="p-4">
+                <p>Welcome to Trupt! 🚀</p>
+                <FoodList/>
+            </main>
+            <BottomNavigation />
+        </div>
+        
+    );
+};
+
+export default Home;
+{/* //     <button onClick={() => setShowForm(true)}>Donate Food</button> */ }
+    // <Header/>
+    // <FoodList/>
+    {/* {showForm && (
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label>Food Name:</label>
@@ -73,9 +90,6 @@ const Home = () => {
                     <LocationSuggestion/>
                     <button type="submit">Submit</button>
                 </form>
-            )}
-        </div>
-    );
-};
-
-export default Home;
+            )} */}
+        //             <BottomNavigation/>
+        // </div>}
