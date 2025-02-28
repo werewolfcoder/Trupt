@@ -1,11 +1,10 @@
 import { useRef, useState } from "react";
-import { UploadCloud, MapPin, Clock, Star, ImagePlus } from "lucide-react";
+import { UploadCloud, MapPin, Clock, Star, ImagePlus, ArrowLeft } from "lucide-react";
 import LocationSuggestion from "../components/LocationSuggestion";
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
+import VolunteerSearchPanel from "../components/ConfirmationPage";
 import BottomNavigation from "../components/BottomNavigation";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import VolunteerSearchPanel from "../components/VolunteerSearchPanel";
 
 const AddItemPage = () => {
     const [foodName, setFoodName] = useState("");
@@ -18,6 +17,8 @@ const AddItemPage = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const panelRef = useRef(null);
     const [isPanelOpen, setIsPanelOpen] = useState(false);
+    const navigate = useNavigate();
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -32,11 +33,9 @@ const AddItemPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsPanelOpen(true);
-        console.log(foodName,freshness,emergency,locationELoc,locationText,image)
         try {
             await createDonation();
-            setIsPanelOpen(true);  // Open volunteer search panel after successful donation
+            setIsPanelOpen(true);  // Only call once
         } catch (error) {
             console.error("Error creating donation:", error);
         }
@@ -63,7 +62,7 @@ const AddItemPage = () => {
             formData,
             {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: Bearer `${localStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data',
                 }
             }
@@ -73,10 +72,18 @@ const AddItemPage = () => {
             alert("Donation created successfully!");
         }
     }
-   
+
     return (
         <div className="p-5">
-            <h2 className="text-2xl font-semibold text-emerald-600 mb-4">Donate Food</h2>
+            <div className="flex items-center mb-4">
+                <button
+                    onClick={() => navigate("/")}
+                    className="flex items-center text-gray-600 hover:text-emerald-600"
+                >
+                    <ArrowLeft className="w-5 h-5 mr-1" /> Back
+                </button>
+                <h2 className="text-2xl font-semibold text-emerald-600 ml-4">Donate Food</h2>
+            </div>
             <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
                 {/* Food Name */}
                 <div>
@@ -164,7 +171,7 @@ const AddItemPage = () => {
                     </div>
                 </div>
 
-                {/* Submit Button - Updated text */}
+                {/* Submit Button */}
                 <div className="p-4">
                     <button
                         type="submit"

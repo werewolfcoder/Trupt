@@ -1,34 +1,47 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import LocationSuggestion from '../components/LocationSuggestion';
+import React, { useContext, useState,useEffect} from 'react';
+import { Heart, HandHeart } from 'lucide-react';
 import BottomNavigation from '../components/BottomNavigation';
-import Header from '../components/Header'
+import Header from '../components/Header';
 import FoodList from '../components/FoodList';
+import { SocketContext } from '../context/SocketContext';
+import {UserDataContext} from '../context/UserContext'
 const Home = () => {
-    const [showForm, setShowForm] = useState(false);
-    const [foodName, setFoodName] = useState('');
-    // const [foodPhoto, setFoodPhoto] = useState(null);
-    const [freshness, setFreshness] = useState(1);
-    const [emergency, setEmergency] = useState('');
-    const [location, setLocation] = useState(''); // Add state for location
+const [activeTab, setActiveTab] = useState('donations'); // Track active tab
+const {sendMessage,recievMessage} = useContext(SocketContext)
+const {user} = useContext(UserDataContext)
+// useEffect(()=>{
+//     sendMessage("join",{userId:user._id})
+// })
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-    }
+return (
+    <div className="min-h-screen pb-20">
+        <Header />
+        <main className="p-4">
+            {/* Selection Tabs */}
+            <div className="flex justify-center space-x-6 mb-4">
+                {[
+                    { key: 'donations', icon: <Heart className="w-6 h-6" /> },
+                    { key: 'volunteering', icon: <HandHeart className="w-6 h-6" /> },
+                ].map(({ key, icon }) => (
+                    <button
+                        key={key}
+                        className={`p-3 rounded-full transition flex items-center justify-center w-12 h-12 border-2 
+                            ${activeTab === key ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-gray-200 text-gray-700 border-gray-300'}`}
+                        onClick={() => setActiveTab(key)}
+                    >
+                        {icon}
+                    </button>
+                ))}
+            </div>
 
+            {/* Content Section */}
+            <FoodList filter={activeTab} />
+        </main>
 
-    return (
-        <div className="min-h-screen pb-20"> {/* Padding to prevent content overlap on mobile */}
-            <Header />
-            <main className="p-4">
-                <p>Welcome to Trupt! 🚀</p>
-                <FoodList/>
-            </main>
-            <BottomNavigation />
-        </div>
-        
-    );
+        <BottomNavigation />
+    </div>
+);
+
 };
 
 export default Home;

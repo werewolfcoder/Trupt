@@ -10,7 +10,7 @@ module.exports.registerUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { fullname, email, password, userType } = req.body;
+    const { fullname, email, password} = req.body;
 
     const userExists = await userModel.findOne({ email });   
     if (userExists) {
@@ -22,8 +22,7 @@ module.exports.registerUser = async (req, res, next) => {
         firstname: fullname.firstname,
         lastname: fullname.lastname,
         email,
-        password: hashedPassword,
-        userType
+        password: hashedPassword
     });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });

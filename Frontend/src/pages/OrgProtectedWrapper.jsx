@@ -17,7 +17,7 @@ const OrgProtectedWrapper = ({children}) => {
         Authorization: `Bearer ${token}`}
     }).then((response)=>{
         if(response.status === 200){
-             setOrg(response.data.org)
+             setOrg(response.data)
             setIsLoading(false)
         }}).catch((err)=>{
             console.log(err)
