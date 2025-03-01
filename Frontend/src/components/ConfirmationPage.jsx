@@ -18,6 +18,7 @@ const ConfirmationPage = ({ isOpen, onClose, foodName, freshness, emergency, loc
         { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
       );
 
+      // Initial animation for the loading text
       gsap.to(textRef.current, {
         scale: 1.05,
         repeat: -1,
@@ -26,13 +27,18 @@ const ConfirmationPage = ({ isOpen, onClose, foodName, freshness, emergency, loc
         ease: "power1.inOut",
       });
 
+      // Set submitted state after initial loading
       setTimeout(() => {
         setSubmitted(true);
-        setLoadingText("Submission Successful!");
-        setTimeout(() => navigate("/"), 2000);
+        setLoadingText("Donation Ready!");
       }, 2000);
     }
-  }, [isOpen, navigate]);
+  }, [isOpen]);
+
+  const handleConfirm = () => {
+    navigate("/");
+    onClose();
+  };
 
   if (!isOpen) return null;
 
@@ -43,20 +49,31 @@ const ConfirmationPage = ({ isOpen, onClose, foodName, freshness, emergency, loc
     >
       <div className="flex flex-col items-center space-y-4 w-full max-w-md bg-white rounded-2xl p-6 shadow-lg">
         {submitted ? (
-          <CheckCircle className="w-12 h-12 text-green-500" />
+          <>
+            <CheckCircle className="w-12 h-12 text-green-500" />
+            <p className="text-lg font-semibold text-green-600">{loadingText}</p>
+          </>
         ) : (
           <p ref={textRef} className="text-lg font-semibold text-black tracking-wide text-center">
             {loadingText}
           </p>
         )}
 
-        {/* Display user-entered data */}
         <div className="w-full text-gray-700 bg-gray-100 p-4 rounded-lg space-y-2">
           <p><strong>🍲 Food:</strong> {foodName}</p>
           <p><strong>⭐ Freshness:</strong> {freshness}/5</p>
           <p><strong>⏰ Emergency:</strong> {emergency}</p>
           <p><strong>📍 Location:</strong> {location}</p>
         </div>
+
+        {submitted && (
+          <button
+            onClick={handleConfirm}
+            className="w-full bg-emerald-500 text-white py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-colors mt-4"
+          >
+            Confirm & Continue
+          </button>
+        )}
       </div>
     </div>
   );

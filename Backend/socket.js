@@ -17,12 +17,13 @@ function initializeSocket(server) {
 
         socket.on('join', async (data) => {
             const {userId} = data;
+            console.log(`${userId} joined`)
                 await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
             
         });
 
 
-        socket.on('update-location-captain', async (data) => {
+        socket.on('update-location', async (data) => {
             const { userId, location } = data;
 
             if (!location || !location.ltd || !location.lng) {

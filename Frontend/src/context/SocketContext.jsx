@@ -11,6 +11,7 @@ const SocketProvider = ({ children }) => {
         // Basic connection logic
         socket.on('connect', () => {
             console.log('Connected to server');
+    
         });
 
         socket.on('disconnect', () => {
@@ -19,15 +20,8 @@ const SocketProvider = ({ children }) => {
 
     }, []);
 
-    const sendMessage = (eventName, message)=>{
-        socket.emit(eventName, message);
-    };
-    const ReceiveMessage = (eventName, callback)=>{
-        socket.on(eventName, callback);
-    };
-
     return (
-        <SocketContext.Provider value={{sendMessage, ReceiveMessage }}>
+        <SocketContext.Provider value={{socket}}>
             {children}
         </SocketContext.Provider>
     );

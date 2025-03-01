@@ -14,15 +14,17 @@ import OrgContext from './context/OrgContext';
 import UserContext from './context/UserContext';
 import UserProtectedWrapper from "./pages/UserProtectedWrapper"
 import OrgProtectedWrapper from "./pages/OrgProtectedWrapper"
+import UserLogOut from "./pages/UserLogout"
 const App = () => {
   return (
     <OrgContext>
       <UserContext>
 
         <Routes>
-          <Route path="/" element={<UserProtectedWrapper><Home></Home></UserProtectedWrapper>} />
+        <Route path="/" element={<UserProtectedWrapper><Home></Home></UserProtectedWrapper>} />
           <Route path="/login" element={<UserLogin />} />
           <Route path="/signup" element={<UserSignup />} />
+          <Route path="/logout" element={<UserProtectedWrapper><UserLogOut></UserLogOut></UserProtectedWrapper>} />
           <Route path="/org-login" element={<OrgLogin />} />
           <Route path="/org-signup" element={<OrgSignup />} />
           <Route path="/community" element={<UserProtectedWrapper><CommunityPage></CommunityPage></UserProtectedWrapper>} />
