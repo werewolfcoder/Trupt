@@ -32,6 +32,22 @@ export const getUserDonations = async () => {
         const response = await axios.get(
             `${import.meta.env.VITE_BASE_URL}/donations/user`,
             {
+                headers: { Authorization: `Bearer ${token}` }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getUserVolunteering = async (userId) => {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/donations/userVolunteering`,
+            { userId },
+            {
                 headers: { 
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

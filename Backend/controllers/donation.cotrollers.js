@@ -73,6 +73,23 @@ const donationController = {
             console.error(err);
             return res.status(500).json({ message: err.message });
         }
+    },
+    getUserVolunteering: async(req, res) => {
+        try {
+            const { userId } = req.body;
+            const volunteeredDonations = await donationModel
+                .find({ 
+                    volunteer: userId,
+                    status: 'accepted'
+                })
+                .sort({ acceptedAt: -1 })
+                .populate(['user', 'volunteer']);
+
+            return res.status(200).json(volunteeredDonations);
+        } catch (err) {
+            console.error('Error fetching volunteered donations:', err);
+            return res.status(500).json({ message: err.message });
+        }
     }
 };
 
