@@ -5,7 +5,8 @@ export default defineConfig({
   plugins: [react()],
     define: {
     __DEFINES__: {},
-       __HMR_CONFIG_NAME__:{}
+       __HMR_CONFIG_NAME__:{},
+       __BASE__:{}
   }
   // No define section needed with our fix
 })
