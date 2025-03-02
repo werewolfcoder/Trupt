@@ -3,21 +3,21 @@ const mongoose = require('mongoose');
 const donationSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
         required: true
     },
     volunteer: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'user'
     }],
     foodName: {
         type: String,
         required: true
     },
-    // foodPhoto: {
-    //     type: String,
-    //     required: true
-    // },
+    imageUrl: {
+        type: String,
+        required: true
+    },
     freshness: {
         type: Number,
         required: true
@@ -29,6 +29,10 @@ const donationSchema = new mongoose.Schema({
     location: {
         type: String,
         required: true
+    },
+    locationELoc:{
+        type:String,
+        required:true
     },
     status: {
         type: String,

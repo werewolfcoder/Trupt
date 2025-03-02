@@ -6,111 +6,116 @@ import { UserDataContext } from '../context/UserContext';
 const UserSignUp = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState(''); 
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userData, setUserData] = useState({});
-const [userType, setUserType] = useState('donor'); // Add state for user type
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
     const [user, setUser] = useContext(UserDataContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const newUser = {
             fullname: {
                 firstname: firstName,
-                lastname: lastName
+                lastname: lastName,
             },
-            email: email,
-            password: password,
-            userType: userType // Include user type in the new user object
+            email,
+            password
         };
 
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser);
-       if (response.status === 201) {
-        const data = response.data;
-
-        setUser(data.user)
-        localStorage.setItem('token', data.token);
-        navigate('/login');
-       }
-              
-        console.log(userData);
-        setFirstName('');
-        setLastName('');
-        setEmail('');
-        setPassword('');
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser);
+            if (response.status === 201) {
+                const { user: userData, token } = response.data;
+                setUser(userData);
+                localStorage.setItem('token', token);
+                navigate('/login');
+            }
+        } catch (error) {
+            console.error('Registration failed:', error);
+            alert('Registration failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div>
-            <h1>User Sign Up</h1>
-            <form onSubmit={handleSubmit}>
-                <label>First Name</label>
-                <input
-                    onChange={(e) => {
-                        setFirstName(e.target.value);
-                    }}
-                    required
-                    type="text"
-                    value={firstName}
-                    placeholder="Enter First Name"
-                />
-                <label>Last Name</label>
-                <input
-                    onChange={(e) => {
-                        setLastName(e.target.value);
-                    }}
-                    required
-                    type="text"
-                    value={lastName}
-                    placeholder="Enter Last Name"
-                />
-                <label>Email</label>
-                <input
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}
-                    required
-                    type="email"
-                    value={email}
-                    placeholder="Enter Email"
-                />
-                <label>Password</label>
-                <input
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
-                    required
-                    type="password"
-                    value={password}
-                    placeholder="Enter Password"
-                />
-<label>User Type</label>
-                <div>
-                    <input
-                        type="radio"
-                        id="donor"
-                        name="userType"
-                        value="donor"
-                        checked={userType === 'donor'}
-                        onChange={(e) => setUserType(e.target.value)}
-                    />
-                    <label htmlFor="donor">Donor</label>
-                    <input
-                        type="radio"
-                        id="volunteer"
-                        name="userType"
-                        value="volunteer"
-                        checked={userType === 'volunteer'}
-                        onChange={(e) => setUserType(e.target.value)}
-                    />
-                    <label htmlFor="volunteer">Volunteer</label>
+        <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
+            <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 space-y-6">
+                <h1 className="text-2xl font-semibold text-center text-emerald-500">User Sign Up</h1>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-1">First Name</label>
+                        <input
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder="Enter First Name"
+                            required
+                            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-1">Last Name</label>
+                        <input
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder="Enter Last Name"
+                            required
+                            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-1">Email</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter Email"
+                            required
+                            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-1">Password</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter Password"
+                            required
+                            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        />
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-2 bg-emerald-500 text-white rounded-lg font-medium hover:bg-emerald-600 transition active:scale-95"
+                    >
+                        {loading ? 'Signing up...' : 'Sign Up'}
+                    </button>
+                </form>
+
+                <div className="text-center space-y-2 text-sm text-gray-600">
+                    <p>
+                        Already have an account?{' '}
+                        <Link to="/login" className="text-emerald-500 hover:underline">Login</Link>
+                    </p>
+                    <p>
+                        Register as an Organization?{' '}
+                        <Link to="/org-signup" className="text-emerald-500 hover:underline">Sign Up</Link>
+                    </p>
                 </div>
-                <button type="submit">Sign Up</button>
-            </form>
-            <Link to="/login">Already have an account? Login</Link>
-            <Link to="/org-signup">Register as an organization</Link>
+            </div>
         </div>
     );
 };
