@@ -1,10 +1,14 @@
+// vite.config.js
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa';
 
-// https://vite.dev/config/
 export default defineConfig({
-  '__DEFINES__': '{}',
-  plugins: [react()
-  ],
+  plugins: [react()],
+  define: {
+    // This is crucial - ensure all your environment variables are defined here
+    'process.env': process.env,
+    'VITE_BASE_URL':JSON.stringify('https://trupt.onrender.com')
+    // If you're using specific variables, define them explicitly:
+    // 'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
+  },
 })
