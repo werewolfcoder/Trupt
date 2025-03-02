@@ -1,24 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { acceptDonation } from "../services/donationService";
 
-const FoodDetailsModal = ({ isOpen, onClose,currentUserId, food, onStatusUpdate }) => {
+const FoodDetailsModal = ({ isOpen, onClose, currentUserId, food, onStatusUpdate }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Add debug logging
+    useEffect(() => {
+        if (isOpen) {
+            console.log({
+                currentUserId,
+                foodUserId: food?.user?._id,
+                food,
+                isMatch: food?.user?._id === currentUserId
+            });
+        }
+    }, [isOpen, food, currentUserId]);
+
     if (!isOpen) return null;
-    const currentUser = currentUserId
+
     const displayData = {
-        user:food?.user || donation?.user,
-        name: food?.foodName || donation?.foodName || 'N/A',
-        image: food?.imageUrl || food?.image || 'placeholder-image.jpg',
-        freshness: food?.freshness || donation?.freshness || 'N/A',
-        emergency: food?.emergency || donation?.emergency || 'N/A',
-        location: food?.location || donation?.location || 'N/A',
+        user: food?.user || {},  // Ensure we have an object even if user is undefined
+        name: food?.foodName || 'N/A',
+        // Fix image URL construction
+        image: food?.imageUrl ? `${import.meta.env.VITE_BASE_URL}${food.imageUrl}` : '/default-food-image.png',
+        freshness: food?.freshness || 'N/A',
+        emergency: food?.emergency || 'N/A',
+        location: food?.location || 'N/A',
         distance: food?.distance || 'N/A',
-        status: food?.status || donation?.status || 'pending'
+        status: food?.status || 'pending'
     };
 
     const isAccepted = displayData.status === 'accepted';
+    const isCurrentUserDonation = food?.user?._id === currentUserId;
+    const showAcceptButton = food?.status !== 'accepted' && food?.user?._id !== currentUserId;
 
     const handleAccept = async () => {
         const donationId = food?._id;
@@ -40,9 +55,7 @@ const FoodDetailsModal = ({ isOpen, onClose,currentUserId, food, onStatusUpdate 
             setIsLoading(false);
         }
     };
-console.log("food user ",food.user)
-console.log("current uswr ",currentUser)
-console.log("currentttttt  user ",currentUserId)
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
@@ -50,7 +63,11 @@ console.log("currentttttt  user ",currentUserId)
                 <img 
                     src={displayData.image} 
                     alt={displayData.name} 
-                    className="w-full h-40 object-cover rounded-md mb-3" 
+                    className="w-full h-40 object-cover rounded-md mb-3"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/default-food-image.png';
+                    }}
                 />
                 <p><strong>Freshness:</strong> {displayData.freshness}</p>
                 <p><strong>Emergency:</strong> {displayData.emergency}</p>
@@ -67,9 +84,9 @@ console.log("currentttttt  user ",currentUserId)
                     <p className="text-red-500 text-sm mt-2">{error}</p>
                 )}
                 <div className="mt-4 flex justify-between">
-                    {displayData.user==currentUser&&(
+                    {showAcceptButton && (
                         <button 
-                            className={`px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 disabled:bg-gray-300 disabled:cursor-not-allowed`}
+                            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
                             onClick={handleAccept}
                             disabled={isLoading}
                         >
@@ -81,7 +98,7 @@ console.log("currentttttt  user ",currentUserId)
                         onClick={onClose}
                         disabled={isLoading}
                     >
-                        {isAccepted ? 'Close' : 'Cancel'}
+                        {displayData.status === 'accepted' ? 'Close' : 'Cancel'}
                     </button>
                 </div>
             </div>

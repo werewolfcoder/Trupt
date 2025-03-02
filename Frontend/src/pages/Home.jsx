@@ -104,6 +104,12 @@ const Home = () => {
         };
     }, [user?._id, socket]);
 
+    // Add debug logging
+    useEffect(() => {
+        console.log("Current user context:", user);
+        console.log("User ID from context:", user?._id);
+    }, [user]);
+
     return (
         <div className="min-h-screen pb-20">
             <Header />
@@ -139,9 +145,15 @@ const Home = () => {
             {/* Modal */}
             <FoodDetailsModal 
                 isOpen={!!selectedFood} 
-                currentUserId={user?._id}
+                currentUserId={user?._id?.toString()} // Ensure ID is a string
                 onClose={() => setSelectedFood(null)} 
-                food={selectedFood}
+                food={selectedFood && {
+                    ...selectedFood,
+                    user: {
+                        ...selectedFood.user,
+                        _id: selectedFood.user?._id?.toString() // Ensure food user ID is a string
+                    }
+                }}
                 onStatusUpdate={(updatedDonation) => {
                     if (updatedDonation.user._id === user?._id) {
                         setUserDonations(prev => prev.map(d => 

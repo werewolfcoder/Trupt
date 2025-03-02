@@ -135,9 +135,9 @@ const FoodList = ({ onFoodClick, filter, currentUserId }) => {
         >
             <div className="flex items-center space-x-3">
                 <img
-                    src={imageUrls[item._id] || '/default-food-image.png'}
+                    src={item.imageUrl ? `${import.meta.env.VITE_BASE_URL}${item.imageUrl}` : '/default-food-image.png'}
                     alt={item.foodName}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-200" // Updated classes
+                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
                     onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = '/default-food-image.png';
