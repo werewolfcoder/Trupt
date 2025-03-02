@@ -3,31 +3,45 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  define: {
-    // Define all required global variables
-    __DEFINES__: JSON.stringify({}),
-    __HMR_CONFIG_NAME__: JSON.stringify({}),
-    __BASE__: JSON.stringify({}),
-    __HMR_PROTOCOL__: JSON.stringify(''),
-    __HMR_HOSTNAME__: JSON.stringify(''),
-    __HMR_PORT__: JSON.stringify(''),
-    global: 'globalThis',
-    // Add any other undefined globals you encounter
+  resolve: {
+    alias: {
+      // Add any path aliases if needed
+      '@': '/src',
+    }
   },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    sourcemap: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-      },
-    },
+  define: {
+    global: 'window', // This handles most global undefined issues
   },
   server: {
     port: 5173,
-    strictPort: false,
     host: true,
+    proxy: {
+      '/api': {
+        target: 'https://trupt.onrender.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'], // Add other dependencies that need optimization
+    esbuildOptions: {
+      define: {
+        global: 'globalThis' // Another way to handle global
+      }
+    }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'], // Split vendor chunks
+          // Add other chunks as needed
+        }
+      }
+    },
+    commonjsOptions: {
+      transformMixedEsModules: true // Handle mixed module types
+    }
   }
 })
