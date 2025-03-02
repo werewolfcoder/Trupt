@@ -11,6 +11,7 @@ export default defineConfig({
     __HMR_PROTOCOL__: JSON.stringify(''),
     __HMR_HOSTNAME__: JSON.stringify(''),
     __HMR_PORT__: JSON.stringify(''),
+    __SERVER_HOST__:JSON.stringify('')
     global: 'globalThis',
     // Add any other undefined globals you encounter
   },
