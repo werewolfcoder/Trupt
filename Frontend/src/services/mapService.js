@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getDistance = async (origin, destination) => {
     const token = localStorage.getItem('token');
-   console.log(origin)
+ 
     try {
         const response = await axios.get(
             `${import.meta.env.VITE_BASE_URL}/maps/get-distance`,

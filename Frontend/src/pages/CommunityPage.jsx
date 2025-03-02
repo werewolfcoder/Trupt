@@ -11,7 +11,7 @@ const CommunityPage = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const [comments, setComments] = useState({});
 
-    console.log("User in Community Page:", user); // Debugging
+
 
     // Add this function inside your component
     const isPostLikedByUser = (post) => {

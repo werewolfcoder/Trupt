@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { getUserDonations, getUserVolunteering } from "../services/donationService";
 import { getDistance } from "../services/mapService";
 import { useNavigate } from "react-router-dom";
+import { fetchImage } from '../utils/imageUtils';
+
+const BACKEND_URL = import.meta.env.VITE_BASE_URL;
 
 const statusColors = {
     Delivered: "text-green-500",
@@ -26,6 +29,7 @@ const FoodList = ({ onFoodClick, filter, currentUserId }) => {
     const [acceptedDonations, setAcceptedDonations] = useState([]);
     const [userLocation, setUserLocation] = useState(null);
     const [distances, setDistances] = useState({});
+    const [imageUrls, setImageUrls] = useState({});
 
     useEffect(() => {
         const fetchAllDonations = async () => {
@@ -86,6 +90,32 @@ const FoodList = ({ onFoodClick, filter, currentUserId }) => {
         calculateDistances();
     }, [userLocation, acceptedDonations]);
 
+    useEffect(() => {
+        const loadImages = async () => {
+            const donations = filter === 'donations' ? myDonations : acceptedDonations;
+            const newImageUrls = {};
+            
+            for (const donation of donations) {
+                if (donation.imageUrl) {
+                    const url = await fetchImage(donation.imageUrl);
+                    if (url) {
+                        newImageUrls[donation._id] = url;
+                    }
+                }
+            }
+            
+            setImageUrls(prev => ({...prev, ...newImageUrls}));
+        };
+
+        loadImages();
+
+        // Cleanup function
+        return () => {
+            // Revoke all object URLs on unmount
+            Object.values(imageUrls).forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [myDonations, acceptedDonations, filter]);
+
     const handleTrackClick = (e, donationId) => {
         e.stopPropagation();
         navigate(`/tracking/${donationId}`);
@@ -105,9 +135,13 @@ const FoodList = ({ onFoodClick, filter, currentUserId }) => {
         >
             <div className="flex items-center space-x-3">
                 <img
-                    src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`}
+                    src={imageUrls[item._id] || '/default-food-image.png'}
                     alt={item.foodName}
-                    className="w-12 h-12 rounded-lg object-cover"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-200" // Updated classes
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/default-food-image.png';
+                    }}
                 />
                 <div>
                     <span className="text-md font-medium block">

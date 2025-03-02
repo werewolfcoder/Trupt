@@ -68,7 +68,7 @@ const NotificationsPage = () => {
         if (distance < 1) return `${Math.round(distance * 1000)}m away`;
         return `${distance} away`;
     };
-    console.log(availableDonations)
+    
     const renderDonationItem = (item) => (
         <li
             key={item._id}

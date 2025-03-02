@@ -46,7 +46,7 @@ const Home = () => {
             if (data.user._id !== user._id) {
                 setAvailableDonations(prev => [data, ...prev]);
                 // Play notification sound if needed
-                new Audio('/notification-sound.mp3').play().catch(() => {});
+                new Audio('../assets/notification.mp3').play().catch(() => {});
             }
         });
 
@@ -74,14 +74,7 @@ const Home = () => {
 
             navigator.geolocation.getCurrentPosition(
                 position => {
-                    console.log(
-                        
-                           user._id,
-                            
-                                position.coords.latitude,
-                                position.coords.longitude
-                            
-                    )
+                 
                     socket.emit('update-location', {
                         userId: user._id,
                         location: {
@@ -146,6 +139,7 @@ const Home = () => {
             {/* Modal */}
             <FoodDetailsModal 
                 isOpen={!!selectedFood} 
+                currentUserId={user?._id}
                 onClose={() => setSelectedFood(null)} 
                 food={selectedFood}
                 onStatusUpdate={(updatedDonation) => {
