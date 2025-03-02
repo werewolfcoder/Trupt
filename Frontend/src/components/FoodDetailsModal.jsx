@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { acceptDonation } from "../services/donationService";
+import { getDistance } from "../services/mapService";
 
 const FoodDetailsModal = ({ isOpen, onClose, currentUserId, food, onStatusUpdate }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [distance, setDistance] = useState(null);
 
     // Add debug logging
     useEffect(() => {
@@ -16,6 +18,44 @@ const FoodDetailsModal = ({ isOpen, onClose, currentUserId, food, onStatusUpdate
             });
         }
     }, [isOpen, food, currentUserId]);
+
+    // Calculate distance when modal opens
+    useEffect(() => {
+        const calculateDistance = async () => {
+            if (!food?.locationELoc) return;
+
+            try {
+                // Get user's current location
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const calculatedDistance = await getDistance(
+                        { eloc: food.locationELoc },
+                        { 
+                            lat: position.coords.latitude, 
+                            lng: position.coords.longitude 
+                        }
+                    );
+                    setDistance(calculatedDistance);
+                });
+            } catch (error) {
+                console.error('Error calculating distance:', error);
+            }
+        };
+
+        if (isOpen && food) {
+            calculateDistance();
+        }
+    }, [isOpen, food]);
+
+    const formatDistance = (dist) => {
+        if (!dist) return 'N/A';
+        if (dist.distance) {
+            return dist.distance;
+        }
+        if (dist < 1) {
+            return `${Math.round(dist * 1000)}m away`;
+        }
+        return `${dist} away`;
+    };
 
     if (!isOpen) return null;
 
@@ -72,9 +112,7 @@ const FoodDetailsModal = ({ isOpen, onClose, currentUserId, food, onStatusUpdate
                 <p><strong>Freshness:</strong> {displayData.freshness}</p>
                 <p><strong>Emergency:</strong> {displayData.emergency}</p>
                 <p><strong>Location:</strong> {displayData.location}</p>
-                {displayData.distance && (
-                    <p><strong>Distance:</strong> {displayData.distance}</p>
-                )}
+                <p><strong>Distance:</strong> {formatDistance(distance)}</p>
                 <p><strong>Status:</strong> <span className={`${
                     isAccepted ? 'text-emerald-500' : 'text-gray-500'
                 }`}>
