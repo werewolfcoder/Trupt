@@ -59,3 +59,18 @@ export const getUserVolunteering = async (userId) => {
         throw error;
     }
 };
+
+export const getAllDonations = async () => {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/donations/all`,
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

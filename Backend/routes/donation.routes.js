@@ -45,4 +45,10 @@ router.post('/userVolunteering',
     body('userId').isMongoId().withMessage('Invalid user Id'),
     donationController.getUserVolunteering
 )
+
+router.get('/all',
+    authMiddleware.authUser,
+    donationController.getAllDonations
+);
+
 module.exports = router;

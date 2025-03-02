@@ -1,8 +1,11 @@
 import { Home, Users, Bell, PlusCircle, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { DonationContext } from "../context/DonationContext";
 
 const BottomNavigation = () => {
   const location = useLocation();
+  const { unreadCount } = useContext(DonationContext);
 
   if (location.pathname === "/add") {
     return null;
@@ -38,7 +41,7 @@ const BottomNavigation = () => {
             </button>
           </Link>
         </li>
-        <li>
+        <li className="relative">
           <Link 
             to="/notifications" 
             className={`flex flex-col items-center ${
@@ -46,6 +49,11 @@ const BottomNavigation = () => {
             }`}
           >
             <Bell className="w-6 h-6" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
           </Link>
         </li>
         <li>

@@ -90,6 +90,20 @@ const donationController = {
             console.error('Error fetching volunteered donations:', err);
             return res.status(500).json({ message: err.message });
         }
+    },
+
+    getAllDonations: async (req, res) => {
+        try {
+            const donations = await donationModel
+                .find({ status: 'pending' })  // Only get pending donations
+                .sort({ createdAt: -1 })
+                .populate('user');
+            
+            return res.status(200).json(donations);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: err.message });
+        }
     }
 };
 

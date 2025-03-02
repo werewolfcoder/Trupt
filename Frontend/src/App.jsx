@@ -18,34 +18,36 @@ import UserLogOut from "./pages/UserLogout"
 import LiveTracking from "./components/LiveTracking";
 import Tracking from "./pages/Tracking"
 import TrackingPage from './pages/TrackingPage';
+import DonationProvider from './context/DonationContext';
 
 const App = () => {
   return (
     <OrgContext>
       <UserContext>
-
-        <Routes>
-        <Route path="/" element={<UserProtectedWrapper><Home></Home></UserProtectedWrapper>} />
-          <Route path="/login" element={<UserLogin />} />
-          <Route path="/signup" element={<UserSignup />} />
-          <Route path="/logout" element={<UserProtectedWrapper><UserLogOut></UserLogOut></UserProtectedWrapper>} />
-          <Route path="/org-login" element={<OrgLogin />} />
-          <Route path="/org-signup" element={<OrgSignup />} />
-          <Route path="/tracking" element={<Tracking/>}/>
-          <Route path="/community" element={<UserProtectedWrapper><CommunityPage></CommunityPage></UserProtectedWrapper>} />
-          <Route path="/notifications" element={<UserProtectedWrapper><NotificationsPage></NotificationsPage></UserProtectedWrapper>} />
-          <Route path="/add" element={<UserProtectedWrapper><AddItemPage></AddItemPage></UserProtectedWrapper>} />
-          <Route path="/profile" element={<UserProtectedWrapper><ProfilePage></ProfilePage></UserProtectedWrapper>} />
-          <Route path="/edit-profile" element={<UserProtectedWrapper><EditProfile></EditProfile></UserProtectedWrapper>} />
-          <Route 
-            path="/tracking/:donationId" 
-            element={
-                <UserProtectedWrapper>
-                    <TrackingPage />
-                </UserProtectedWrapper>
-            } 
-          />
-        </Routes>
+        <DonationProvider>
+          <Routes>
+            <Route path="/" element={<UserProtectedWrapper><Home></Home></UserProtectedWrapper>} />
+            <Route path="/login" element={<UserLogin />} />
+            <Route path="/signup" element={<UserSignup />} />
+            <Route path="/logout" element={<UserProtectedWrapper><UserLogOut></UserLogOut></UserProtectedWrapper>} />
+            <Route path="/org-login" element={<OrgLogin />} />
+            <Route path="/org-signup" element={<OrgSignup />} />
+            <Route path="/tracking" element={<Tracking/>}/>
+            <Route path="/community" element={<UserProtectedWrapper><CommunityPage></CommunityPage></UserProtectedWrapper>} />
+            <Route path="/notifications" element={<UserProtectedWrapper><NotificationsPage></NotificationsPage></UserProtectedWrapper>} />
+            <Route path="/add" element={<UserProtectedWrapper><AddItemPage></AddItemPage></UserProtectedWrapper>} />
+            <Route path="/profile" element={<UserProtectedWrapper><ProfilePage></ProfilePage></UserProtectedWrapper>} />
+            <Route path="/edit-profile" element={<UserProtectedWrapper><EditProfile></EditProfile></UserProtectedWrapper>} />
+            <Route 
+              path="/tracking/:donationId" 
+              element={
+                  <UserProtectedWrapper>
+                      <TrackingPage />
+                  </UserProtectedWrapper>
+              } 
+            />
+          </Routes>
+        </DonationProvider>
       </UserContext>
     </OrgContext>
   );

@@ -6,6 +6,8 @@ import FoodList from '../components/FoodList';
 import { SocketContext } from '../context/SocketContext';
 import { UserDataContext } from '../context/UserContext';
 import FoodDetailsModal from '../components/FoodDetailsModal';
+import { DonationContext } from '../context/DonationContext';
+import { getAllDonations } from '../services/donationService';
 
 const Home = () => {
     const [activeTab, setActiveTab] = useState('donations');
@@ -13,7 +15,25 @@ const Home = () => {
     const [user] = useContext(UserDataContext);
     const [selectedFood, setSelectedFood] = useState(null);
     const [userDonations, setUserDonations] = useState([]); // User's own donations
-    const [availableDonations, setAvailableDonations] = useState([]); // Donations from others
+    const { availableDonations, setAvailableDonations } = useContext(DonationContext); // Fixed destructuring
+
+    // Add initial fetch for available donations
+    useEffect(() => {
+        const fetchAvailableDonations = async () => {
+            try {
+                const donations = await getAllDonations();
+                // Filter out user's own donations
+                const othersDonations = donations.filter(d => d.user._id !== user?._id);
+                setAvailableDonations(othersDonations);
+            } catch (error) {
+                console.error('Error fetching available donations:', error);
+            }
+        };
+
+        if (user?._id) {
+            fetchAvailableDonations();
+        }
+    }, [user?._id]);
 
     useEffect(() => {
         if (!user?._id || !socket) return;
@@ -25,6 +45,8 @@ const Home = () => {
             // Only add to available donations if it's not from current user
             if (data.user._id !== user._id) {
                 setAvailableDonations(prev => [data, ...prev]);
+                // Play notification sound if needed
+                new Audio('/notification-sound.mp3').play().catch(() => {});
             }
         });
 
@@ -139,7 +161,7 @@ const Home = () => {
                 }}
             />
 
-            <BottomNavigation />
+            <BottomNavigation/>
         </div>
     );
 };
